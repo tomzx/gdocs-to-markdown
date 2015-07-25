@@ -1,0 +1,45 @@
+{
+	"name": "tomzx/gdocs-to-markdown",
+	"description": "Google documents to markdown exporter",
+	"type": "library",
+	"keywords": [
+		"google docs",
+		"markdown"
+	],
+	"homepage": "https://github.com/tomzx/gdocs-to-markdown",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Tom Rochette",
+			"email": "tom@tomrochette.com",
+			"homepage": "http://www.tomrochette.com"
+		}
+	],
+	"support": {
+		"issues": "https://github.com/tomzx/gdocs-to-markdown/issues"
+	},
+	"require": {
+		"php": ">=5.4.0",
+
+		"google/apiclient": "~1.0",
+		"league/html-to-markdown": "~3.0"
+	},
+	"require-dev": {
+		"phpunit/phpunit": "~4"
+	},
+	"autoload": {
+		"psr-4": {
+			"tomzx\\GoogleDocsToMarkdown\\": "src/tomzx/GoogleDocsToMarkdown"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"tomzx\\GoogleDocsToMarkdown\\Test\\": "tests/tomzx/GoogleDocsToMarkdown"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "0.1-dev"
+		}
+	}
+}
