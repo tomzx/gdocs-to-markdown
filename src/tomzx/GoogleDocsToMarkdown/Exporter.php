@@ -4,29 +4,52 @@ namespace tomzx\GoogleDocsToMarkdown;
 
 use Google_Client;
 use Google_Service_Drive;
-use League\HTMLToMarkdown\HtmlConverter;
 
 class Exporter {
 	/**
 	 * @var \Google_Client
 	 */
 	protected $client;
+	/**
+	 * @var \Google_Service_Drive
+	 */
+	protected $service;
+	/**
+	 * @var \League\HTMLToMarkdown\HtmlConverter
+	 */
+	protected $converter;
 
+	/**
+	 * @param \Google_Client $client
+	 */
 	public function __construct(Google_Client $client)
 	{
 		$this->client = $client;
+		$this->service = new Google_Service_Drive($this->client);
+		$this->converter = (new Converter())->getConverter();
 	}
 
-	public function export($folderId, $targetDirectory)
+	/**
+	 * @param string $folderId
+	 * @param $outputDirectory
+	 * @param string $path
+	 */
+	public function export($folderId, $outputDirectory, $path = null)
 	{
-		$service = new Google_Service_Drive($this->client);
+		$this->exportFiles($folderId, $outputDirectory, $path);
 
-		$converter = new HtmlConverter([
-			'header_style' => 'atx',
-			'strip_tags' => true,
-			'remove_nodes' => 'head',
-		]);
+		$this->exportFolders($folderId, $outputDirectory, $path);
+	}
 
+	/**
+	 * @param string $folderId
+	 * @param $outputDirectory
+	 * @param string $path
+	 * @return array
+	 */
+	protected function exportFiles($folderId, $outputDirectory, $path)
+	{
+		$targetDirectory = $outputDirectory . '/' . $path;
 		if ( ! file_exists($targetDirectory)) {
 			mkdir($targetDirectory);
 		}
@@ -35,22 +58,48 @@ class Exporter {
 			'q' => 'mimeType="application/vnd.google-apps.document"',
 		];
 
-		$children = $service->children->listChildren($folderId, $parameters);
-
+		$children = $this->service->children->listChildren($folderId, $parameters);
 		foreach ($children->getItems() as $child) {
 			$fileId = $child->getId();
-			$file = $service->files->get($fileId);
+			$file = $this->service->files->get($fileId);
 			$title = $file->getTitle();
+			$path = $path ? $path . '/' . $title : $title;
 
-			echo 'Downloading '.$title . PHP_EOL;
+			echo 'Downloading ' . $path . ' ... ';
 
 			$downloadUrl = $file->getExportLinks()['text/html'];
 			$content = file_get_contents($downloadUrl);
 
-			$markdown = $converter->convert($content);
+			echo 'Converting ... ';
 
-			$filename = $title.'.md';
-			file_put_contents($targetDirectory.'/'.$filename, $markdown);
+			$markdown = $this->converter->convert($content);
+
+			$filename = $title . '.md';
+			file_put_contents($targetDirectory . '/' . $filename, $markdown);
+
+			echo 'Done!' . PHP_EOL;
+		}
+	}
+
+	/**
+	 * @param string $folderId
+	 * @param $outputDirectory
+	 * @param string $path
+	 */
+	protected function exportFolders($folderId, $outputDirectory, $path)
+	{
+		$parameters = [
+			'q' => 'mimeType="application/vnd.google-apps.folder"',
+		];
+
+		$children = $this->service->children->listChildren($folderId, $parameters);
+		foreach ($children->getItems() as $child) {
+			$folderId = $child->getId();
+			$folder = $this->service->files->get($folderId);
+			$title = $folder->getTitle();
+
+			$path = $path ? $path . '/' . $title : $title;
+			$this->export($folderId, $outputDirectory, $path);
 		}
 	}
 }
