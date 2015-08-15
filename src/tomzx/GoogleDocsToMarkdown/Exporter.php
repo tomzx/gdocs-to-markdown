@@ -63,9 +63,9 @@ class Exporter {
 			$fileId = $child->getId();
 			$file = $this->service->files->get($fileId);
 			$title = $file->getTitle();
-			$path = $path ? $path . '/' . $title : $title;
+			$targetPath = $path ? $path . '/' . $title : $title;
 
-			echo 'Downloading ' . $path . ' ... ';
+			echo 'Downloading ' . $targetPath . ' ... ';
 
 			$downloadUrl = $file->getExportLinks()['text/html'];
 			$content = file_get_contents($downloadUrl);
