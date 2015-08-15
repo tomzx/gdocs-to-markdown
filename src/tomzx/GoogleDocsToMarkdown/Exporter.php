@@ -51,7 +51,7 @@ class Exporter {
 	{
 		$targetDirectory = $outputDirectory . '/' . $path;
 		if ( ! file_exists($targetDirectory)) {
-			mkdir($targetDirectory);
+			mkdir($targetDirectory, 0777, true);
 		}
 
 		$parameters = [

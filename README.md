@@ -12,8 +12,8 @@ A simple application which lets you export files from a specific folder in Googl
 
 ## Getting started
 
-1. Create a `client_secret.json` at the root of the application which can be obtained by following [this guide](https://developers.google.com/drive/web/quickstart/php#step_1_enable_the_api_name).
-2. Run `php export.php $folderId`, where `$folderId` is the identifier of the folder you want to convert to markdown. All the documents in subfolders will be converted to markdown as well. You can find the final output in the `output` directory.
+1. Create a `google-documents-exporter.p12` at the root of the application which can be obtained by following [this guide](https://developers.google.com/api-client-library/php/auth/service-accounts#creatinganaccount).
+2. Run `php export.php $random@developer.gserviceaccount.com $folderId`, where `$random@developer.gserviceaccount.com` ìs the service account account which can be obtained through the `Google's Developers Console - Permissions` and `$folderId` is the identifier of the folder you want to convert to markdown. All the documents in subfolders will be converted to markdown as well. You can find the final output in the `output` directory.
 
 ## License
 
