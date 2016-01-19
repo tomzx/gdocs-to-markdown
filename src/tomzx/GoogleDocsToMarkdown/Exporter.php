@@ -4,6 +4,7 @@ namespace tomzx\GoogleDocsToMarkdown;
 
 use Google_Client;
 use Google_Service_Drive;
+use RuntimeException;
 
 class Exporter {
 	/**
@@ -69,6 +70,10 @@ class Exporter {
 
 			$downloadUrl = $file->getExportLinks()['text/html'];
 			$content = file_get_contents($downloadUrl);
+
+			if ($content === false) {
+				throw new RuntimeException('There was an error while fetching the content of ' . $downloadUrl);
+			}
 
 			echo 'Converting ... ';
 
