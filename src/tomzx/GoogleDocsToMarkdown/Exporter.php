@@ -15,7 +15,7 @@ class Exporter {
 	 */
 	protected $service;
 	/**
-	 * @var \League\HTMLToMarkdown\HtmlConverter
+	 * @var \tomzx\GoogleDocsToMarkdown\Converter
 	 */
 	protected $converter;
 
@@ -26,7 +26,7 @@ class Exporter {
 	{
 		$this->client = $client;
 		$this->service = new Google_Service_Drive($this->client);
-		$this->converter = (new Converter())->getConverter();
+		$this->converter = new Converter();
 	}
 
 	/**

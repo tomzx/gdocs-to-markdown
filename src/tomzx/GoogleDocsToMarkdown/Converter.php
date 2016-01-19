@@ -27,4 +27,27 @@ class Converter {
 	{
 		return $this->converter;
 	}
+
+	/**
+	 * @param string $html
+	 * @return string
+     */
+	public function convert($html)
+	{
+		$markdown = $this->converter->convert($html);
+		return $this->processMarkdown($markdown);
+	}
+
+	/**
+	 * @param string $markdown
+	 * @return string
+     */
+	protected function processMarkdown($markdown)
+	{
+		// Remove Google link tracking
+		$markdown = preg_replace_callback('/\(https?:\/\/www\.google\.com\/url\?q=(?<url>[^&]+)[^\)]+\)/', function ($matches) {
+			return '('.urldecode($matches['url']).')';
+		}, $markdown);
+		return $markdown;
+	}
 }
